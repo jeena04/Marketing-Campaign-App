@@ -1,15 +1,24 @@
 import streamlit as st
 from dotenv import load_dotenv
+#from langchain_community.llms import HuggingFaceEndpoint
 from langchain.llms import HuggingFaceHub
-from langchain_community import HuggingFaceHub
+#from langchain_community import HuggingFaceHub
 from langchain.prompts import PromptTemplate
-from langchain import FewShotPromptTemplate
+from langchain.prompts import FewShotPromptTemplate
+#from langchain_core.prompts.few_shot import FewShotPromptTemplate
 from langchain.prompts.example_selector import LengthBasedExampleSelector
+#from transformers import pipeline
 
+load_dotenv()
+import os
+os.environ["HUGGINGFACE_API_KEY"]=os.getenv("HUGGINGFACE_API_KEY")
 
-#load_dotenv()
-#import os
-#os.environ["HUGGINGFACE_API_KEY"]=os.getenv("HUGGINGFACE_API_KEY")
+#qa_model = pipeline("question-answering", "timpal0l/mdeberta-v3-base-squad2")
+llm = HuggingFaceHub(huggingfacehub_api_token=os.environ['HUGGINGFACE_API_KEY'],
+                          repo_id= "mistralai/Mistral-7B-Instruct-v0.2",
+                          temperature=0.5)  
+  
+
 
 examples = [
     {
@@ -57,10 +66,11 @@ suffix = """
 Question: {userInput}
 Response: """
 
+
 example_selector = LengthBasedExampleSelector(
     examples=examples,
     example_prompt=example_prompt,
-    max_length=1000
+    max_length=200
 )
 
 new_prompt_template = FewShotPromptTemplate(
@@ -68,6 +78,10 @@ new_prompt_template = FewShotPromptTemplate(
     example_prompt=example_prompt,
     prefix=prefix,
     suffix=suffix,
+    
     input_variables=["userInput"],
     example_separator="\n"
 )
+query = "What is a house?"
+print(new_prompt_template.format(userInput=query))
+print(llm(new_prompt_template.format(userInput=query)))
