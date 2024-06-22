@@ -1,7 +1,6 @@
 import streamlit as st
 from dotenv import load_dotenv
-#from langchain_community.llms import HuggingFaceEndpoint
-from langchain.llms import HuggingFaceHub
+from langchain_community.llms import HuggingFaceEndpoint
 #from langchain_community import HuggingFaceHub
 from langchain.prompts import PromptTemplate
 from langchain.prompts import FewShotPromptTemplate
@@ -14,7 +13,7 @@ import os
 os.environ["HUGGINGFACE_API_KEY"]=os.getenv("HUGGINGFACE_API_KEY")
 
 #qa_model = pipeline("question-answering", "timpal0l/mdeberta-v3-base-squad2")
-llm = HuggingFaceHub(huggingfacehub_api_token=os.environ['HUGGINGFACE_API_KEY'],
+llm = HuggingFaceEndpoint(huggingfacehub_api_token=os.environ['HUGGINGFACE_API_KEY'],
                           repo_id= "mistralai/Mistral-7B-Instruct-v0.2",
                           temperature=0.5)  
   
@@ -84,4 +83,4 @@ new_prompt_template = FewShotPromptTemplate(
 )
 query = "What is a house?"
 print(new_prompt_template.format(userInput=query))
-print(llm(new_prompt_template.format(userInput=query)))
+print(llm.invoke(new_prompt_template.format(userInput=query)))
