@@ -59,7 +59,7 @@ def getLLMResponse(query,age_option,tasktype_option):
     )
 
     prefix = """You are a {template_ageoption}, and {template_tasktype_option} 
-    Here are some examples: 
+    
     """
 
     suffix = """
@@ -70,8 +70,9 @@ def getLLMResponse(query,age_option,tasktype_option):
     example_selector = LengthBasedExampleSelector(
         examples=examples,
         example_prompt=example_prompt,
-        max_length=200
+        max_length=100
     )
+    
 
     new_prompt_template = FewShotPromptTemplate(
         example_selector= example_selector,  # use example_selector instead of examples
@@ -82,6 +83,7 @@ def getLLMResponse(query,age_option,tasktype_option):
         input_variables=["template_userInput","template_ageoption","template_tasktype_option"],
         example_separator="\n"
     )
+    
     #query = form_input
     print(new_prompt_template.format(template_userInput=query,template_ageoption=age_option,template_tasktype_option=tasktype_option))
     response=llm.invoke(new_prompt_template.format(template_userInput=query,template_ageoption=age_option,template_tasktype_option=tasktype_option))
@@ -93,7 +95,7 @@ def getLLMResponse(query,age_option,tasktype_option):
 #UI Starting here   
 st.set_page_config(page_title="Marketting tool", 
                    page_icon="🧊", 
-                   layout="wide", 
+                   layout="centered", 
                    initial_sidebar_state="collapsed")
 st.header("hey, how can i help you today?")
 form_input = st.text_area("Enter your query here", height=175)
