@@ -84,3 +84,16 @@ new_prompt_template = FewShotPromptTemplate(
 query = "What is a house?"
 print(new_prompt_template.format(userInput=query))
 print(llm.invoke(new_prompt_template.format(userInput=query)))
+
+#UI Starting here   
+st.set_page_config(page_title="Marketting tool", 
+                   page_icon="🧊", 
+                   layout="wide", 
+                   initial_sidebar_state="collapsed")
+st.header("hey, how can i help you today?")
+form_input = st.text_area("Enter your query here", height=175)
+tasktype_option=st.selectbox('Please select the task type', ('Write a sales copy', 'Create a tweet', 'Write a product description'),key=1)
+
+age_option=st.selectbox('Please select the age group', ('5-10 years', '11-15 years', '16-20 years'),key=2)
+numberofwords=st.slider('Words Limit',1,200,25)
+submit=st.button("Genrate")
