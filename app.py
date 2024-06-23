@@ -9,20 +9,6 @@ from langchain.prompts.example_selector import LengthBasedExampleSelector
 #from transformers import pipeline
 
 load_dotenv()
-#UI Starting here   
-st.set_page_config(page_title="Marketting tool", 
-                   page_icon="🧊", 
-                   layout="wide", 
-                   initial_sidebar_state="collapsed")
-st.header("hey, how can i help you today?")
-form_input = st.text_area("Enter your query here", height=175)
-tasktype_option=st.selectbox('Please select the task type', ('Write a sales copy', 'Create a tweet', 'Write a product description'),key=1)
-
-age_option=st.selectbox('Please select the age group', ('Kid', 'Adult', 'Senior Citizen'),key=2)
-numberofwords=st.slider('Words Limit',1,200,25)
-submit=st.button("Genrate")
-
-
 import os
 os.environ["HUGGINGFACE_API_KEY"]=os.getenv("HUGGINGFACE_API_KEY")
 
@@ -98,6 +84,27 @@ def getLLMResponse(query,age_option,tasktype_option):
     )
     #query = form_input
     print(new_prompt_template.format(template_userInput=query,template_ageoption=age_option,template_tasktype_option=tasktype_option))
-    print(llm.invoke(new_prompt_template.format(template_userInput=query,template_ageoption=age_option,template_tasktype_option=tasktype_option)))
+    response=llm.invoke(new_prompt_template.format(template_userInput=query,template_ageoption=age_option,template_tasktype_option=tasktype_option))
+    #print(llm.invoke(new_prompt_template.format(template_userInput=query,template_ageoption=age_option,template_tasktype_option=tasktype_option)))
+    print(response)
+    return response
 
+
+#UI Starting here   
+st.set_page_config(page_title="Marketting tool", 
+                   page_icon="🧊", 
+                   layout="wide", 
+                   initial_sidebar_state="collapsed")
+st.header("hey, how can i help you today?")
+form_input = st.text_area("Enter your query here", height=175)
+tasktype_option=st.selectbox('Please select the task type', ('Write a sales copy', 'Create a tweet', 'Write a product description'),key=1)
+
+age_option=st.selectbox('Please select the age group', ('Kid', 'Adult', 'Senior Citizen'),key=2)
+numberofwords=st.slider('Words Limit',1,200,25)
+submit=st.button("Genrate")
+
+
+
+if submit:
+    st.write(getLLMResponse(form_input,tasktype_option,age_option))
 
