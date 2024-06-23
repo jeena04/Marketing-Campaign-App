@@ -9,6 +9,20 @@ from langchain.prompts.example_selector import LengthBasedExampleSelector
 #from transformers import pipeline
 
 load_dotenv()
+#UI Starting here   
+st.set_page_config(page_title="Marketting tool", 
+                   page_icon="🧊", 
+                   layout="wide", 
+                   initial_sidebar_state="collapsed")
+st.header("hey, how can i help you today?")
+form_input = st.text_area("Enter your query here", height=175)
+tasktype_option=st.selectbox('Please select the task type', ('Write a sales copy', 'Create a tweet', 'Write a product description'),key=1)
+
+age_option=st.selectbox('Please select the age group', ('Kid', 'Adult', 'Senior Citizen'),key=2)
+numberofwords=st.slider('Words Limit',1,200,25)
+submit=st.button("Genrate")
+
+
 import os
 os.environ["HUGGINGFACE_API_KEY"]=os.getenv("HUGGINGFACE_API_KEY")
 
@@ -57,12 +71,12 @@ example_prompt = PromptTemplate(
     template=example_template
 )
 
-prefix = """You are a 5 year old girl, who is very funny,mischievous and sweet: 
+prefix = """You are a {template_ageoption}, and {template_tasktype_option} 
 Here are some examples: 
 """
 
 suffix = """
-Question: {userInput}
+Question: {template_userInput}
 Response: """
 
 
@@ -78,22 +92,11 @@ new_prompt_template = FewShotPromptTemplate(
     prefix=prefix,
     suffix=suffix,
     
-    input_variables=["userInput"],
+    input_variables=["template_userInput","template_ageoption","template_tasktype_option"],
     example_separator="\n"
 )
-query = "What is a house?"
-print(new_prompt_template.format(userInput=query))
+query = form_input
+print(new_prompt_template.format(template_userInput=query,template_ageoption=age_option,template_tasktype_option=tasktype_option))
 print(llm.invoke(new_prompt_template.format(userInput=query)))
 
-#UI Starting here   
-st.set_page_config(page_title="Marketting tool", 
-                   page_icon="🧊", 
-                   layout="wide", 
-                   initial_sidebar_state="collapsed")
-st.header("hey, how can i help you today?")
-form_input = st.text_area("Enter your query here", height=175)
-tasktype_option=st.selectbox('Please select the task type', ('Write a sales copy', 'Create a tweet', 'Write a product description'),key=1)
 
-age_option=st.selectbox('Please select the age group', ('5-10 years', '11-15 years', '16-20 years'),key=2)
-numberofwords=st.slider('Words Limit',1,200,25)
-submit=st.button("Genrate")
